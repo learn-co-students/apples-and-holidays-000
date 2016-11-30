@@ -56,21 +56,26 @@ end
 def add_new_holiday_with_supplies(holiday_hash, season, holiday_name, supply_array)
   # code here
   # remember to return the updated hash
-  holiday_hash[season] = {holiday_name => supply_array}
+  # holiday_hash[season] = {holiday_name => supply_array}
+  holiday_hash[season][holiday_name] = supply_array
+  holiday_hash
 end
 
 def all_winter_holiday_supplies(holiday_hash)
   # return an array of all of the supplies that are used in the winter season
-  hash_top_values = holiday_hash.values.flatten
-  all_supplies = []
-  hash_top_values.each do |array_item|
-    array_item.each do |key, value|
-      value.each do |array_item_lower_level|
-        all_supplies << array_item_lower_level
-      end
-    end
-  end
-  all_supplies
+  # hash_top_values = holiday_hash.values.flatten
+  # all_supplies = []
+  # hash_top_values.each do |array_item|
+  #   array_item.each do |key, value|
+  #     value.each do |array_item_lower_level|
+  #       all_supplies << array_item_lower_level
+  #     end
+  #   end
+  # end
+  # all_supplies
+  holiday_supplies[:winter].map do |holiday, supplies|
+    supplies
+  end.flatten
 end
 
 def all_supplies_in_holidays(holiday_hash)
@@ -81,15 +86,10 @@ def all_supplies_in_holidays(holiday_hash)
   # Summer:
   #   Fourth Of July: Fireworks, BBQ
   # etc.
-  holiday_hash.each do |key, value|
-    puts key.to_s.capitalize! + ":"
-    value.each do |key, value|
-      symbol_array = key.to_s.split("_")
-      symbol_string = ""
-      symbol_array.each do |symbol_array_item|
-        symbol_array_item.capitalize!
-      end
-      puts "  " + symbol_array.join(" ") + ": " + value.join(", ")
+  holiday_hash.each do |season, holidays|
+    puts season.to_s.capitalize! + ":"
+    holidays.each do |holiday, supplies|
+      puts "  #{holiday.to_s.split('_').map {|w| w.capitalize }.join(' ') }: #{supplies.join(', ')}"
     end
   end
 end
@@ -97,13 +97,9 @@ end
 def all_holidays_with_bbq(holiday_hash)
   # return an array of holiday names (as symbols) where supply lists
   # include the string "BBQ"
-  holiday_names = []
-  holiday_hash.values.each do |items|
-    items.each do |key, value|
-      if value.include?("BBQ")
-        holiday_names << key
-      end
+  holiday_hash.map do |season, holidays|
+    holidays.map do |holiday, supplies|
+      holiday if supplies.include?("BBQ")
     end
-  end
-  holiday_names
+  end.flatten.compact
 end
